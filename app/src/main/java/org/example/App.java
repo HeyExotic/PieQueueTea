@@ -4,11 +4,44 @@
 package org.example;
 
 public class App {
-    public String getGreeting() {
-        return "Hello World!";
-    }
-
     public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+       
+        CutieQueue cuteQueue = new CutieQueue(3);
+        
+   
+        Cutie puppy = SampleCuties.createPuppy();
+        Cutie kitten = SampleCuties.createKitten();
+        Cutie panda = SampleCuties.createBabyPanda();
+        Cutie duckling = SampleCuties.createDuckling();
+        
+      
+        enqueueSafely(cuteQueue, puppy);
+        enqueueSafely(cuteQueue, kitten);
+        enqueueSafely(cuteQueue, panda);
+        
+       
+        enqueueSafely(cuteQueue, duckling);
+        
+     
+        processQueue(cuteQueue);
+    }
+    
+    private static void enqueueSafely(CutieQueue queue, Cutie cutie) {
+        try {
+            queue.enqueue(cutie);
+            System.out.println("Queued: " + cutie.description());
+        } catch (IllegalStateException e) {
+            System.out.println("Failed to enqueue " + cutie.description());
+            System.out.println("   Reason: " + e.getMessage());
+        }
+    }
+    
+    private static void processQueue(CutieQueue queue) {
+        System.out.println("\nProcessing queue:");
+        while (!queue.isEmpty()) {
+            Cutie current = queue.dequeue();
+            System.out.println("Processing: " + current.description() + 
+                             " (Cuteness: " + current.cutenessRating() + "/10)");
+        }
     }
 }

@@ -7,8 +7,53 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AppTest {
-    @Test void appHasAGreeting() {
-        App classUnderTest = new App();
-        assertNotNull(classUnderTest.getGreeting(), "app should have a greeting");
+    @Test
+    void testQueueOperations() {
+        CutieQueue queue = new CutieQueue(2);
+        Cutie puppy = SampleCuties.createPuppy();
+        
+     
+        assertTrue(queue.isEmpty());
+        assertEquals(0, queue.size());
+        
+    
+        queue.enqueue(puppy);
+        assertEquals(1, queue.size());
+        assertFalse(queue.isEmpty());
+        assertFalse(queue.isFull());
+        
+   
+        Cutie dequeued = queue.dequeue();
+        assertEquals(puppy, dequeued);
+        assertTrue(queue.isEmpty());
+    }
+    
+    @Test
+    void testFullQueue() {
+        CutieQueue queue = new CutieQueue(1);
+        Cutie kitten = SampleCuties.createKitten();
+        
+        queue.enqueue(kitten);
+        assertTrue(queue.isFull());
+        
+        assertThrows(IllegalStateException.class, () -> queue.enqueue(SampleCuties.createPuppy()));
+    }
+    
+    @Test
+    void testTryEnqueue() {
+        CutieQueue queue = new CutieQueue(1);
+        assertTrue(queue.tryEnqueue(SampleCuties.createPuppy()));
+        assertFalse(queue.tryEnqueue(SampleCuties.createKitten()));
+    }
+    
+    @Test
+    void testCircularBehavior() {
+        CutieQueue queue = new CutieQueue(2);
+        queue.enqueue(SampleCuties.createPuppy());
+        queue.enqueue(SampleCuties.createKitten());
+        queue.dequeue();
+        
+        
+        assertTrue(queue.tryEnqueue(SampleCuties.createBabyPanda()));
     }
 }
